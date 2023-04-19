@@ -35,7 +35,7 @@
 		1 => '`lideres`.`LLAVE`',
 		2 => 2,
 		3 => 3,
-		4 => '`lideres`.`CEDULA`',
+		4 => 4,
 		5 => 5,
 		6 => 6,
 		7 => '`lideres`.`CELULAR`',

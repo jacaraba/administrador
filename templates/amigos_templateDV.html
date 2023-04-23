@@ -12,7 +12,6 @@
 			<div class="clearfix"></div>
 		</div>
 	</div>
-	<hr class="hidden-xs hidden-sm">
 
 	<div class="row">
 		<!-- form inputs -->
@@ -31,9 +30,9 @@
 				<!-- Field: LIDER -->
 				<div class="form-group amigos-LIDER">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="LIDER" data-parent_link="view_parent_modal">LIDER</label>
+					<label class="control-label col-lg-3" for="LIDER">LIDER</label>
 					<div class="col-lg-9">
-						<div class="lookup-flex"><%%COMBO(LIDER)%%><%%PLINK(LIDER)%%><%%ADDNEW(lideres)%%></div>
+						<input type="text" class="form-control" name="LIDER" id="LIDER" value="<%%VALUE(LIDER)%%>">
 					</div>
 				</div>
 

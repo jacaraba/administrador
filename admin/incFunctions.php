@@ -951,20 +951,6 @@
 			/* application schema as created in AppGini */
 			$schema = [
 				'lideres' => [
-					'LLAVE' => [
-						'appgini' => "INT NOT NULL PRIMARY KEY AUTO_INCREMENT",
-						'info' => [
-							'caption' => 'LLAVE',
-							'description' => '',
-						],
-					],
-					'ESLIDER' => [
-						'appgini' => "VARCHAR(10) NULL DEFAULT 'VOTANTE'",
-						'info' => [
-							'caption' => 'ESLIDER',
-							'description' => '',
-						],
-					],
 					'LIDER' => [
 						'appgini' => "VARCHAR(10) NULL",
 						'info' => [
@@ -973,7 +959,7 @@
 						],
 					],
 					'CEDULA' => [
-						'appgini' => "VARCHAR(10) NULL",
+						'appgini' => "VARCHAR(10) NOT NULL PRIMARY KEY",
 						'info' => [
 							'caption' => 'CEDULA',
 							'description' => '',
@@ -2292,7 +2278,6 @@
 				'divpol2022' => ['PUESTO'],
 			],
 			'amigos' => [
-				'lideres' => ['LIDER'],
 				'divpol2022' => ['PUESTO'],
 			],
 			'municipios' => [
@@ -2478,7 +2463,6 @@
 				'PUESTO' => 'SELECT `divpol2022`.`PUESTO`, IF(CHAR_LENGTH(`divpol2022`.`PUESTO`) || CHAR_LENGTH(`divpol2022`.`nompue`), CONCAT_WS(\'\', `divpol2022`.`PUESTO`, \'-\', `divpol2022`.`nompue`), \'\') FROM `divpol2022` ORDER BY 2',
 			],
 			'amigos' => [
-				'LIDER' => 'SELECT `lideres`.`LLAVE`, IF(CHAR_LENGTH(`lideres`.`CEDULA`) || CHAR_LENGTH(`lideres`.`NOMBRE`), CONCAT_WS(\'\', `lideres`.`CEDULA`, `lideres`.`NOMBRE`), \'\') FROM `lideres` LEFT JOIN `divpol2022` as divpol20221 ON `divpol20221`.`PUESTO`=`lideres`.`PUESTO` ORDER BY 2',
 				'PUESTO' => 'SELECT `divpol2022`.`PUESTO`, IF(CHAR_LENGTH(`divpol2022`.`PUESTO`) || CHAR_LENGTH(`divpol2022`.`nompue`), CONCAT_WS(\'\', `divpol2022`.`PUESTO`, \' - \', `divpol2022`.`nompue`), \'\') FROM `divpol2022` ORDER BY 2',
 			],
 			'divpol2022' => [

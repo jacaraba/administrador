@@ -12,11 +12,9 @@
 		setupTable(
 			'lideres', " 
 			CREATE TABLE IF NOT EXISTS `lideres` ( 
-				`LLAVE` INT NOT NULL AUTO_INCREMENT,
-				PRIMARY KEY (`LLAVE`),
-				`ESLIDER` VARCHAR(10) NULL DEFAULT 'VOTANTE',
 				`LIDER` VARCHAR(10) NULL,
-				`CEDULA` VARCHAR(10) NULL,
+				`CEDULA` VARCHAR(10) NOT NULL,
+				PRIMARY KEY (`CEDULA`),
 				`NOMBRE` VARCHAR(50) NULL,
 				`PUESTO` VARCHAR(9) NULL,
 				`CELULAR` INT(10) NULL,
@@ -24,7 +22,15 @@
 				`CORREO` VARCHAR(40) NULL,
 				`OBSERVACIONES` VARCHAR(100) NULL,
 				`ESTADO` VARCHAR(10) NULL DEFAULT 'INGRESADO'
-			) CHARSET utf8mb4"
+			) CHARSET utf8mb4", [
+				" ALTER TABLE `lideres` CHANGE `LLAVE` `LLAVE` INT NOT NULL ",
+				"ALTER TABLE `lideres` ADD INDEX (`LLAVE`)",
+				"ALTER TABLE `lideres` DROP PRIMARY KEY",
+				"ALTER TABLE `lideres` CHANGE `CEDULA` `CEDULA` VARCHAR(10) NOT NULL ",
+				"ALTER TABLE `lideres` DROP `LLAVE`",
+				"ALTER TABLE `lideres` DROP `ESLIDER`",
+				"ALTER TABLE `lideres` ADD PRIMARY KEY (`CEDULA`)",
+			]
 		);
 		setupIndexes('lideres', ['PUESTO',]);
 
@@ -45,12 +51,9 @@
 				`CORREO` VARCHAR(40) NULL,
 				`OBSERVACIONES` VARCHAR(100) NULL,
 				`ESTADO` VARCHAR(10) NULL DEFAULT 'INGRESADO'
-			) CHARSET utf8mb4", [
-				" ALTER TABLE `amigos` CHANGE `LIDER` `LIDER` VARCHAR(40) NULL DEFAULT '1111111111' ",
-				" ALTER TABLE `amigos` CHANGE `LIDER` `LIDER` VARCHAR(10) NULL DEFAULT '1111111111' ",
-			]
+			) CHARSET utf8mb4"
 		);
-		setupIndexes('amigos', ['LIDER','PUESTO',]);
+		setupIndexes('amigos', ['PUESTO',]);
 
 		setupTable(
 			'divpol2022', " 

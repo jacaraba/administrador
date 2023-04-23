@@ -18,8 +18,6 @@
 
 	// Fields that can be displayed in the table view
 	$x->QueryFieldsTV = [
-		"`lideres`.`LLAVE`" => "LLAVE",
-		"`lideres`.`ESLIDER`" => "ESLIDER",
 		"`lideres`.`LIDER`" => "LIDER",
 		"`lideres`.`CEDULA`" => "CEDULA",
 		"`lideres`.`NOMBRE`" => "NOMBRE",
@@ -32,23 +30,19 @@
 	];
 	// mapping incoming sort by requests to actual query fields
 	$x->SortFields = [
-		1 => '`lideres`.`LLAVE`',
+		1 => 1,
 		2 => 2,
 		3 => 3,
 		4 => 4,
-		5 => 5,
+		5 => '`lideres`.`CELULAR`',
 		6 => 6,
-		7 => '`lideres`.`CELULAR`',
+		7 => 7,
 		8 => 8,
 		9 => 9,
-		10 => 10,
-		11 => 11,
 	];
 
 	// Fields that can be displayed in the csv file
 	$x->QueryFieldsCSV = [
-		"`lideres`.`LLAVE`" => "LLAVE",
-		"`lideres`.`ESLIDER`" => "ESLIDER",
 		"`lideres`.`LIDER`" => "LIDER",
 		"`lideres`.`CEDULA`" => "CEDULA",
 		"`lideres`.`NOMBRE`" => "NOMBRE",
@@ -61,8 +55,6 @@
 	];
 	// Fields that can be filtered
 	$x->QueryFieldsFilters = [
-		"`lideres`.`LLAVE`" => "LLAVE",
-		"`lideres`.`ESLIDER`" => "ESLIDER",
 		"`lideres`.`LIDER`" => "LIDER",
 		"`lideres`.`CEDULA`" => "CEDULA",
 		"`lideres`.`NOMBRE`" => "NOMBRE",
@@ -76,8 +68,6 @@
 
 	// Fields that can be quick searched
 	$x->QueryFieldsQS = [
-		"`lideres`.`LLAVE`" => "LLAVE",
-		"`lideres`.`ESLIDER`" => "ESLIDER",
 		"`lideres`.`LIDER`" => "LIDER",
 		"`lideres`.`CEDULA`" => "CEDULA",
 		"`lideres`.`NOMBRE`" => "NOMBRE",
@@ -117,12 +107,12 @@
 	$x->ScriptFileName = 'lideres_view.php';
 	$x->TableTitle = 'lideres';
 	$x->TableIcon = 'table.gif';
-	$x->PrimaryKey = '`lideres`.`LLAVE`';
+	$x->PrimaryKey = '`lideres`.`CEDULA`';
 
-	$x->ColWidth = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, ];
-	$x->ColCaption = ['LLAVE', 'ESLIDER', 'LIDER', 'CEDULA', 'NOMBRE', 'PUESTO', 'CELULAR', 'DIRECCION', 'CORREO', 'OBSERVACIONES', 'ESTADO', ];
-	$x->ColFieldName = ['LLAVE', 'ESLIDER', 'LIDER', 'CEDULA', 'NOMBRE', 'PUESTO', 'CELULAR', 'DIRECCION', 'CORREO', 'OBSERVACIONES', 'ESTADO', ];
-	$x->ColNumber  = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ];
+	$x->ColWidth = [150, 150, 150, 150, 150, 150, 150, 150, 150, ];
+	$x->ColCaption = ['LIDER', 'CEDULA', 'NOMBRE', 'PUESTO', 'CELULAR', 'DIRECCION', 'CORREO', 'OBSERVACIONES', 'ESTADO', ];
+	$x->ColFieldName = ['LIDER', 'CEDULA', 'NOMBRE', 'PUESTO', 'CELULAR', 'DIRECCION', 'CORREO', 'OBSERVACIONES', 'ESTADO', ];
+	$x->ColNumber  = [1, 2, 3, 4, 5, 6, 7, 8, 9, ];
 
 	// template paths below are based on the app main directory
 	$x->Template = 'templates/lideres_templateTV.html';

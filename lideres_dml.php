@@ -13,7 +13,6 @@ function lideres_insert(&$error_message = '') {
 	if(!$arrPerm['insert']) return false;
 
 	$data = [
-		'ESLIDER' => Request::val('ESLIDER', 'VOTANTE'),
 		'LIDER' => Request::val('LIDER', ''),
 		'CEDULA' => Request::val('CEDULA', ''),
 		'NOMBRE' => Request::val('NOMBRE', ''),
@@ -24,6 +23,11 @@ function lideres_insert(&$error_message = '') {
 		'OBSERVACIONES' => Request::val('OBSERVACIONES', ''),
 	];
 
+	if($data['CEDULA'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'CEDULA': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
 
 	// hook: lideres_before_insert
 	if(function_exists('lideres_before_insert')) {
@@ -43,13 +47,13 @@ function lideres_insert(&$error_message = '') {
 		return false;
 	}
 
-	$recID = db_insert_id(db_link());
+	$recID = $data['CEDULA'];
 
 	update_calc_fields('lideres', $recID, calculated_fields()['lideres']);
 
 	// hook: lideres_after_insert
 	if(function_exists('lideres_after_insert')) {
-		$res = sql("SELECT * FROM `lideres` WHERE `LLAVE`='" . makeSafe($recID, false) . "' LIMIT 1", $eo);
+		$res = sql("SELECT * FROM `lideres` WHERE `CEDULA`='" . makeSafe($recID, false) . "' LIMIT 1", $eo);
 		if($row = db_fetch_assoc($res)) {
 			$data = array_map('makeSafe', $row);
 		}
@@ -98,26 +102,7 @@ function lideres_delete($selected_id, $AllowDeleteOfParents = false, $skipChecks
 			);
 	}
 
-	// child table: amigos
-	$res = sql("SELECT `LLAVE` FROM `lideres` WHERE `LLAVE`='{$selected_id}'", $eo);
-	$LLAVE = db_fetch_row($res);
-	$rires = sql("SELECT COUNT(1) FROM `amigos` WHERE `LIDER`='" . makeSafe($LLAVE[0]) . "'", $eo);
-	$rirow = db_fetch_row($rires);
-	if($rirow[0] && !$AllowDeleteOfParents && !$skipChecks) {
-		$RetMsg = $Translation["couldn't delete"];
-		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
-		$RetMsg = str_replace('<TableName>', 'amigos', $RetMsg);
-		return $RetMsg;
-	} elseif($rirow[0] && $AllowDeleteOfParents && !$skipChecks) {
-		$RetMsg = $Translation['confirm delete'];
-		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
-		$RetMsg = str_replace('<TableName>', 'amigos', $RetMsg);
-		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'lideres_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
-		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'lideres_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
-		return $RetMsg;
-	}
-
-	sql("DELETE FROM `lideres` WHERE `LLAVE`='{$selected_id}'", $eo);
+	sql("DELETE FROM `lideres` WHERE `CEDULA`='{$selected_id}'", $eo);
 
 	// hook: lideres_after_delete
 	if(function_exists('lideres_after_delete')) {
@@ -136,7 +121,6 @@ function lideres_update(&$selected_id, &$error_message = '') {
 	if(!check_record_permission('lideres', $selected_id, 'edit')) return false;
 
 	$data = [
-		'ESLIDER' => Request::val('ESLIDER', ''),
 		'LIDER' => Request::val('LIDER', ''),
 		'CEDULA' => Request::val('CEDULA', ''),
 		'NOMBRE' => Request::val('NOMBRE', ''),
@@ -147,6 +131,11 @@ function lideres_update(&$selected_id, &$error_message = '') {
 		'OBSERVACIONES' => Request::val('OBSERVACIONES', ''),
 	];
 
+	if($data['CEDULA'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'CEDULA': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
 	// get existing values
 	$old_data = getRecord('lideres', $selected_id);
 	if(is_array($old_data)) {
@@ -173,7 +162,7 @@ function lideres_update(&$selected_id, &$error_message = '') {
 	if(!update(
 		'lideres', 
 		backtick_keys_once($set), 
-		['`LLAVE`' => $selected_id], 
+		['`CEDULA`' => $selected_id], 
 		$error_message
 	)) {
 		echo $error_message;
@@ -181,6 +170,8 @@ function lideres_update(&$selected_id, &$error_message = '') {
 		exit;
 	}
 
+	$data['selectedID'] = $data['CEDULA'];
+	$newID = $data['CEDULA'];
 
 	$eo = ['silentErrors' => true];
 
@@ -188,16 +179,19 @@ function lideres_update(&$selected_id, &$error_message = '') {
 
 	// hook: lideres_after_update
 	if(function_exists('lideres_after_update')) {
-		$res = sql("SELECT * FROM `lideres` WHERE `LLAVE`='{$data['selectedID']}' LIMIT 1", $eo);
+		$res = sql("SELECT * FROM `lideres` WHERE `CEDULA`='{$data['selectedID']}' LIMIT 1", $eo);
 		if($row = db_fetch_assoc($res)) $data = array_map('makeSafe', $row);
 
-		$data['selectedID'] = $data['LLAVE'];
+		$data['selectedID'] = $data['CEDULA'];
 		$args = ['old_data' => $old_data];
 		if(!lideres_after_update($data, getMemberInfo(), $args)) return;
 	}
 
 	// mm: update ownership data
-	sql("UPDATE `membership_userrecords` SET `dateUpdated`='" . time() . "' WHERE `tableName`='lideres' AND `pkValue`='" . makeSafe($selected_id) . "'", $eo);
+	sql("UPDATE `membership_userrecords` SET `dateUpdated`='" . time() . "', `pkValue`='{$data['CEDULA']}' WHERE `tableName`='lideres' AND `pkValue`='" . makeSafe($selected_id) . "'", $eo);
+
+	// if PK value changed, update $selected_id
+	$selected_id = $newID;
 }
 
 function lideres_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $AllowDelete = 1, $separateDV = 0, $TemplateDV = '', $TemplateDVP = '') {
@@ -232,21 +226,6 @@ function lideres_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $Al
 
 	// unique random identifier
 	$rnd1 = ($dvprint ? rand(1000000, 9999999) : '');
-	// combobox: ESLIDER
-	$combo_ESLIDER = new Combo;
-	$combo_ESLIDER->ListType = 2;
-	$combo_ESLIDER->MultipleSeparator = ', ';
-	$combo_ESLIDER->ListBoxHeight = 10;
-	$combo_ESLIDER->RadiosPerLine = 1;
-	if(is_file(__DIR__ . '/hooks/lideres.ESLIDER.csv')) {
-		$ESLIDER_data = addslashes(implode('', @file(__DIR__ . '/hooks/lideres.ESLIDER.csv')));
-		$combo_ESLIDER->ListItem = array_trim(explode('||', entitiesToUTF8(convertLegacyOptions($ESLIDER_data))));
-		$combo_ESLIDER->ListData = $combo_ESLIDER->ListItem;
-	} else {
-		$combo_ESLIDER->ListItem = array_trim(explode('||', entitiesToUTF8(convertLegacyOptions("LIDER;;VOTANTE"))));
-		$combo_ESLIDER->ListData = $combo_ESLIDER->ListItem;
-	}
-	$combo_ESLIDER->SelectName = 'ESLIDER';
 	// combobox: PUESTO
 	$combo_PUESTO = new DataCombo;
 	// combobox: ESTADO
@@ -282,11 +261,10 @@ function lideres_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $Al
 			$AllowUpdate = 1;
 		}
 
-		$res = sql("SELECT * FROM `lideres` WHERE `LLAVE`='" . makeSafe($selected_id) . "'", $eo);
+		$res = sql("SELECT * FROM `lideres` WHERE `CEDULA`='" . makeSafe($selected_id) . "'", $eo);
 		if(!($row = db_fetch_array($res))) {
 			return error_message($Translation['No records found'], 'lideres_view.php', false);
 		}
-		$combo_ESLIDER->SelectedData = $row['ESLIDER'];
 		$combo_PUESTO->SelectedData = $row['PUESTO'];
 		$combo_ESTADO->SelectedData = $row['ESTADO'];
 		$urow = $row; /* unsanitized data */
@@ -295,11 +273,9 @@ function lideres_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $Al
 		$filterField = Request::val('FilterField');
 		$filterOperator = Request::val('FilterOperator');
 		$filterValue = Request::val('FilterValue');
-		$combo_ESLIDER->SelectedText = (isset($filterField[1]) && $filterField[1] == '2' && $filterOperator[1] == '<=>' ? $filterValue[1] : 'VOTANTE');
 		$combo_PUESTO->SelectedData = $filterer_PUESTO;
-		$combo_ESTADO->SelectedText = (isset($filterField[1]) && $filterField[1] == '11' && $filterOperator[1] == '<=>' ? $filterValue[1] : 'INGRESADO');
+		$combo_ESTADO->SelectedText = (isset($filterField[1]) && $filterField[1] == '9' && $filterOperator[1] == '<=>' ? $filterValue[1] : 'INGRESADO');
 	}
-	$combo_ESLIDER->Render();
 	$combo_PUESTO->HTML = '<span id="PUESTO-container' . $rnd1 . '"></span><input type="hidden" name="PUESTO" id="PUESTO' . $rnd1 . '" value="' . html_attr($combo_PUESTO->SelectedData) . '">';
 	$combo_PUESTO->MatchText = '<span id="PUESTO-container-readonly' . $rnd1 . '"></span><input type="hidden" name="PUESTO" id="PUESTO' . $rnd1 . '" value="' . html_attr($combo_PUESTO->SelectedData) . '">';
 	$combo_ESTADO->Render();
@@ -477,7 +453,6 @@ function lideres_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $Al
 	// set records to read only if user can't insert new records and can't edit current record
 	if(($selected_id && !$AllowUpdate && !$AllowInsert) || (!$selected_id && !$AllowInsert)) {
 		$jsReadOnly = '';
-		$jsReadOnly .= "\tjQuery('input[name=ESLIDER]').parent().html('<div class=\"form-control-static\">' + jQuery('input[name=ESLIDER]:checked').next().text() + '</div>')\n";
 		$jsReadOnly .= "\tjQuery('#LIDER').replaceWith('<div class=\"form-control-static\" id=\"LIDER\">' + (jQuery('#LIDER').val() || '') + '</div>');\n";
 		$jsReadOnly .= "\tjQuery('#CEDULA').replaceWith('<div class=\"form-control-static\" id=\"CEDULA\">' + (jQuery('#CEDULA').val() || '') + '</div>');\n";
 		$jsReadOnly .= "\tjQuery('#NOMBRE').replaceWith('<div class=\"form-control-static\" id=\"NOMBRE\">' + (jQuery('#NOMBRE').val() || '') + '</div>');\n";
@@ -496,8 +471,6 @@ function lideres_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $Al
 	}
 
 	// process combos
-	$templateCode = str_replace('<%%COMBO(ESLIDER)%%>', $combo_ESLIDER->HTML, $templateCode);
-	$templateCode = str_replace('<%%COMBOTEXT(ESLIDER)%%>', $combo_ESLIDER->SelectedData, $templateCode);
 	$templateCode = str_replace('<%%COMBO(PUESTO)%%>', $combo_PUESTO->HTML, $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(PUESTO)%%>', $combo_PUESTO->MatchText, $templateCode);
 	$templateCode = str_replace('<%%URLCOMBOTEXT(PUESTO)%%>', urlencode($combo_PUESTO->MatchText), $templateCode);
@@ -521,8 +494,6 @@ function lideres_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $Al
 	}
 
 	// process images
-	$templateCode = str_replace('<%%UPLOADFILE(LLAVE)%%>', '', $templateCode);
-	$templateCode = str_replace('<%%UPLOADFILE(ESLIDER)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(LIDER)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(CEDULA)%%>', '', $templateCode);
 	$templateCode = str_replace('<%%UPLOADFILE(NOMBRE)%%>', '', $templateCode);
@@ -535,12 +506,6 @@ function lideres_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $Al
 
 	// process values
 	if($selected_id) {
-		if( $dvprint) $templateCode = str_replace('<%%VALUE(LLAVE)%%>', safe_html($urow['LLAVE']), $templateCode);
-		if(!$dvprint) $templateCode = str_replace('<%%VALUE(LLAVE)%%>', html_attr($row['LLAVE']), $templateCode);
-		$templateCode = str_replace('<%%URLVALUE(LLAVE)%%>', urlencode($urow['LLAVE']), $templateCode);
-		if( $dvprint) $templateCode = str_replace('<%%VALUE(ESLIDER)%%>', safe_html($urow['ESLIDER']), $templateCode);
-		if(!$dvprint) $templateCode = str_replace('<%%VALUE(ESLIDER)%%>', html_attr($row['ESLIDER']), $templateCode);
-		$templateCode = str_replace('<%%URLVALUE(ESLIDER)%%>', urlencode($urow['ESLIDER']), $templateCode);
 		if( $dvprint) $templateCode = str_replace('<%%VALUE(LIDER)%%>', safe_html($urow['LIDER']), $templateCode);
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(LIDER)%%>', html_attr($row['LIDER']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(LIDER)%%>', urlencode($urow['LIDER']), $templateCode);
@@ -569,10 +534,6 @@ function lideres_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $Al
 		if(!$dvprint) $templateCode = str_replace('<%%VALUE(ESTADO)%%>', html_attr($row['ESTADO']), $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(ESTADO)%%>', urlencode($urow['ESTADO']), $templateCode);
 	} else {
-		$templateCode = str_replace('<%%VALUE(LLAVE)%%>', '', $templateCode);
-		$templateCode = str_replace('<%%URLVALUE(LLAVE)%%>', urlencode(''), $templateCode);
-		$templateCode = str_replace('<%%VALUE(ESLIDER)%%>', 'VOTANTE', $templateCode);
-		$templateCode = str_replace('<%%URLVALUE(ESLIDER)%%>', urlencode('VOTANTE'), $templateCode);
 		$templateCode = str_replace('<%%VALUE(LIDER)%%>', '', $templateCode);
 		$templateCode = str_replace('<%%URLVALUE(LIDER)%%>', urlencode(''), $templateCode);
 		$templateCode = str_replace('<%%VALUE(CEDULA)%%>', '', $templateCode);

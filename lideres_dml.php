@@ -102,6 +102,25 @@ function lideres_delete($selected_id, $AllowDeleteOfParents = false, $skipChecks
 			);
 	}
 
+	// child table: amigos
+	$res = sql("SELECT `CEDULA` FROM `lideres` WHERE `CEDULA`='{$selected_id}'", $eo);
+	$CEDULA = db_fetch_row($res);
+	$rires = sql("SELECT COUNT(1) FROM `amigos` WHERE `CEDULA`='" . makeSafe($CEDULA[0]) . "'", $eo);
+	$rirow = db_fetch_row($rires);
+	if($rirow[0] && !$AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation["couldn't delete"];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'amigos', $RetMsg);
+		return $RetMsg;
+	} elseif($rirow[0] && $AllowDeleteOfParents && !$skipChecks) {
+		$RetMsg = $Translation['confirm delete'];
+		$RetMsg = str_replace('<RelatedRecords>', $rirow[0], $RetMsg);
+		$RetMsg = str_replace('<TableName>', 'amigos', $RetMsg);
+		$RetMsg = str_replace('<Delete>', '<input type="button" class="btn btn-danger" value="' . html_attr($Translation['yes']) . '" onClick="window.location = \'lideres_view.php?SelectedID=' . urlencode($selected_id) . '&delete_x=1&confirmed=1&csrf_token=' . urlencode(csrf_token(false, true)) . '\';">', $RetMsg);
+		$RetMsg = str_replace('<Cancel>', '<input type="button" class="btn btn-success" value="' . html_attr($Translation[ 'no']) . '" onClick="window.location = \'lideres_view.php?SelectedID=' . urlencode($selected_id) . '\';">', $RetMsg);
+		return $RetMsg;
+	}
+
 	sql("DELETE FROM `lideres` WHERE `CEDULA`='{$selected_id}'", $eo);
 
 	// hook: lideres_after_delete

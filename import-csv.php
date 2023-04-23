@@ -10,6 +10,7 @@
 			return $data;
 		},
 		'amigos' => function($data, $options = []) {
+			if(isset($data['CEDULA'])) $data['CEDULA'] = pkGivenLookupText($data['CEDULA'], 'amigos', 'CEDULA');
 			if(isset($data['PUESTO'])) $data['PUESTO'] = pkGivenLookupText($data['PUESTO'], 'amigos', 'PUESTO');
 
 			return $data;

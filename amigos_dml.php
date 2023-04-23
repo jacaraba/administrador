@@ -15,7 +15,7 @@ function amigos_insert(&$error_message = '') {
 	$data = [
 		'ESLIDER' => Request::val('ESLIDER', 'VOTANTE'),
 		'LIDER' => Request::val('LIDER', '1111111111'),
-		'CEDULA' => Request::val('CEDULA', ''),
+		'CEDULA' => Request::lookup('CEDULA', ''),
 		'NOMBRE' => Request::val('NOMBRE', ''),
 		'PUESTO' => Request::lookup('PUESTO', ''),
 		'NOMPUESTO' => Request::val('NOMPUESTO', ''),
@@ -122,7 +122,7 @@ function amigos_update(&$selected_id, &$error_message = '') {
 	$data = [
 		'ESLIDER' => Request::val('ESLIDER', ''),
 		'LIDER' => Request::val('LIDER', ''),
-		'CEDULA' => Request::val('CEDULA', ''),
+		'CEDULA' => Request::lookup('CEDULA', ''),
 		'NOMBRE' => Request::val('NOMBRE', ''),
 		'PUESTO' => Request::lookup('PUESTO', ''),
 		'NOMPUESTO' => Request::val('NOMPUESTO', ''),
@@ -213,6 +213,7 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 		$dvprint = true;
 	}
 
+	$filterer_CEDULA = Request::val('filterer_CEDULA');
 	$filterer_PUESTO = Request::val('filterer_PUESTO');
 
 	// populate filterers, starting from children to grand-parents
@@ -234,6 +235,8 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 		$combo_ESLIDER->ListData = $combo_ESLIDER->ListItem;
 	}
 	$combo_ESLIDER->SelectName = 'ESLIDER';
+	// combobox: CEDULA
+	$combo_CEDULA = new DataCombo;
 	// combobox: PUESTO
 	$combo_PUESTO = new DataCombo;
 	// combobox: ESTADO
@@ -274,6 +277,7 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 			return error_message($Translation['No records found'], 'amigos_view.php', false);
 		}
 		$combo_ESLIDER->SelectedData = $row['ESLIDER'];
+		$combo_CEDULA->SelectedData = $row['CEDULA'];
 		$combo_PUESTO->SelectedData = $row['PUESTO'];
 		$combo_ESTADO->SelectedData = $row['ESTADO'];
 		$urow = $row; /* unsanitized data */
@@ -283,10 +287,13 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 		$filterOperator = Request::val('FilterOperator');
 		$filterValue = Request::val('FilterValue');
 		$combo_ESLIDER->SelectedText = (isset($filterField[1]) && $filterField[1] == '2' && $filterOperator[1] == '<=>' ? $filterValue[1] : 'VOTANTE');
+		$combo_CEDULA->SelectedData = $filterer_CEDULA;
 		$combo_PUESTO->SelectedData = $filterer_PUESTO;
 		$combo_ESTADO->SelectedText = (isset($filterField[1]) && $filterField[1] == '13' && $filterOperator[1] == '<=>' ? $filterValue[1] : 'INGRESADO');
 	}
 	$combo_ESLIDER->Render();
+	$combo_CEDULA->HTML = '<span id="CEDULA-container' . $rnd1 . '"></span><input type="hidden" name="CEDULA" id="CEDULA' . $rnd1 . '" value="' . html_attr($combo_CEDULA->SelectedData) . '">';
+	$combo_CEDULA->MatchText = '<span id="CEDULA-container-readonly' . $rnd1 . '"></span><input type="hidden" name="CEDULA" id="CEDULA' . $rnd1 . '" value="' . html_attr($combo_CEDULA->SelectedData) . '">';
 	$combo_PUESTO->HTML = '<span id="PUESTO-container' . $rnd1 . '"></span><input type="hidden" name="PUESTO" id="PUESTO' . $rnd1 . '" value="' . html_attr($combo_PUESTO->SelectedData) . '">';
 	$combo_PUESTO->MatchText = '<span id="PUESTO-container-readonly' . $rnd1 . '"></span><input type="hidden" name="PUESTO" id="PUESTO' . $rnd1 . '" value="' . html_attr($combo_PUESTO->SelectedData) . '">';
 	$combo_ESTADO->Render();
@@ -296,13 +303,92 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 
 	<script>
 		// initial lookup values
+		AppGini.current_CEDULA__RAND__ = { text: "", value: "<?php echo addslashes($selected_id ? $urow['CEDULA'] : htmlspecialchars($filterer_CEDULA, ENT_QUOTES)); ?>"};
 		AppGini.current_PUESTO__RAND__ = { text: "", value: "<?php echo addslashes($selected_id ? $urow['PUESTO'] : htmlspecialchars($filterer_PUESTO, ENT_QUOTES)); ?>"};
 
 		jQuery(function() {
 			setTimeout(function() {
+				if(typeof(CEDULA_reload__RAND__) == 'function') CEDULA_reload__RAND__();
 				if(typeof(PUESTO_reload__RAND__) == 'function') PUESTO_reload__RAND__();
 			}, 50); /* we need to slightly delay client-side execution of the above code to allow AppGini.ajaxCache to work */
 		});
+		function CEDULA_reload__RAND__() {
+		<?php if(($AllowUpdate || $AllowInsert) && !$dvprint) { ?>
+
+			$j("#CEDULA-container__RAND__").select2({
+				/* initial default value */
+				initSelection: function(e, c) {
+					$j.ajax({
+						url: 'ajax_combo.php',
+						dataType: 'json',
+						data: { id: AppGini.current_CEDULA__RAND__.value, t: 'amigos', f: 'CEDULA' },
+						success: function(resp) {
+							c({
+								id: resp.results[0].id,
+								text: resp.results[0].text
+							});
+							$j('[name="CEDULA"]').val(resp.results[0].id);
+							$j('[id=CEDULA-container-readonly__RAND__]').html('<span class="match-text" id="CEDULA-match-text">' + resp.results[0].text + '</span>');
+							if(resp.results[0].id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=lideres_view_parent]').hide(); } else { $j('.btn[id=lideres_view_parent]').show(); }
+
+
+							if(typeof(CEDULA_update_autofills__RAND__) == 'function') CEDULA_update_autofills__RAND__();
+						}
+					});
+				},
+				width: '100%',
+				formatNoMatches: function(term) { return '<?php echo addslashes($Translation['No matches found!']); ?>'; },
+				minimumResultsForSearch: 5,
+				loadMorePadding: 200,
+				ajax: {
+					url: 'ajax_combo.php',
+					dataType: 'json',
+					cache: true,
+					data: function(term, page) { return { s: term, p: page, t: 'amigos', f: 'CEDULA' }; },
+					results: function(resp, page) { return resp; }
+				},
+				escapeMarkup: function(str) { return str; }
+			}).on('change', function(e) {
+				AppGini.current_CEDULA__RAND__.value = e.added.id;
+				AppGini.current_CEDULA__RAND__.text = e.added.text;
+				$j('[name="CEDULA"]').val(e.added.id);
+				if(e.added.id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=lideres_view_parent]').hide(); } else { $j('.btn[id=lideres_view_parent]').show(); }
+
+
+				if(typeof(CEDULA_update_autofills__RAND__) == 'function') CEDULA_update_autofills__RAND__();
+			});
+
+			if(!$j("#CEDULA-container__RAND__").length) {
+				$j.ajax({
+					url: 'ajax_combo.php',
+					dataType: 'json',
+					data: { id: AppGini.current_CEDULA__RAND__.value, t: 'amigos', f: 'CEDULA' },
+					success: function(resp) {
+						$j('[name="CEDULA"]').val(resp.results[0].id);
+						$j('[id=CEDULA-container-readonly__RAND__]').html('<span class="match-text" id="CEDULA-match-text">' + resp.results[0].text + '</span>');
+						if(resp.results[0].id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=lideres_view_parent]').hide(); } else { $j('.btn[id=lideres_view_parent]').show(); }
+
+						if(typeof(CEDULA_update_autofills__RAND__) == 'function') CEDULA_update_autofills__RAND__();
+					}
+				});
+			}
+
+		<?php } else { ?>
+
+			$j.ajax({
+				url: 'ajax_combo.php',
+				dataType: 'json',
+				data: { id: AppGini.current_CEDULA__RAND__.value, t: 'amigos', f: 'CEDULA' },
+				success: function(resp) {
+					$j('[id=CEDULA-container__RAND__], [id=CEDULA-container-readonly__RAND__]').html('<span class="match-text" id="CEDULA-match-text">' + resp.results[0].text + '</span>');
+					if(resp.results[0].id == '<?php echo empty_lookup_value; ?>') { $j('.btn[id=lideres_view_parent]').hide(); } else { $j('.btn[id=lideres_view_parent]').show(); }
+
+					if(typeof(CEDULA_update_autofills__RAND__) == 'function') CEDULA_update_autofills__RAND__();
+				}
+			});
+		<?php } ?>
+
+		}
 		function PUESTO_reload__RAND__() {
 		<?php if(($AllowUpdate || $AllowInsert) && !$dvprint) { ?>
 
@@ -466,7 +552,8 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 		$jsReadOnly = '';
 		$jsReadOnly .= "\tjQuery('#ESLIDER').replaceWith('<div class=\"form-control-static\" id=\"ESLIDER\">' + (jQuery('#ESLIDER').val() || '') + '</div>'); jQuery('#ESLIDER-multi-selection-help').hide();\n";
 		$jsReadOnly .= "\tjQuery('#LIDER').replaceWith('<div class=\"form-control-static\" id=\"LIDER\">' + (jQuery('#LIDER').val() || '') + '</div>');\n";
-		$jsReadOnly .= "\tjQuery('#CEDULA').replaceWith('<div class=\"form-control-static\" id=\"CEDULA\">' + (jQuery('#CEDULA').val() || '') + '</div>');\n";
+		$jsReadOnly .= "\tjQuery('#CEDULA').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
+		$jsReadOnly .= "\tjQuery('#CEDULA_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
 		$jsReadOnly .= "\tjQuery('#NOMBRE').replaceWith('<div class=\"form-control-static\" id=\"NOMBRE\">' + (jQuery('#NOMBRE').val() || '') + '</div>');\n";
 		$jsReadOnly .= "\tjQuery('#PUESTO').prop('disabled', true).css({ color: '#555', backgroundColor: '#fff' });\n";
 		$jsReadOnly .= "\tjQuery('#PUESTO_caption').prop('disabled', true).css({ color: '#555', backgroundColor: 'white' });\n";
@@ -488,6 +575,9 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 	// process combos
 	$templateCode = str_replace('<%%COMBO(ESLIDER)%%>', $combo_ESLIDER->HTML, $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(ESLIDER)%%>', $combo_ESLIDER->SelectedData, $templateCode);
+	$templateCode = str_replace('<%%COMBO(CEDULA)%%>', $combo_CEDULA->HTML, $templateCode);
+	$templateCode = str_replace('<%%COMBOTEXT(CEDULA)%%>', $combo_CEDULA->MatchText, $templateCode);
+	$templateCode = str_replace('<%%URLCOMBOTEXT(CEDULA)%%>', urlencode($combo_CEDULA->MatchText), $templateCode);
 	$templateCode = str_replace('<%%COMBO(PUESTO)%%>', $combo_PUESTO->HTML, $templateCode);
 	$templateCode = str_replace('<%%COMBOTEXT(PUESTO)%%>', $combo_PUESTO->MatchText, $templateCode);
 	$templateCode = str_replace('<%%URLCOMBOTEXT(PUESTO)%%>', urlencode($combo_PUESTO->MatchText), $templateCode);
@@ -495,7 +585,7 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 	$templateCode = str_replace('<%%COMBOTEXT(ESTADO)%%>', $combo_ESTADO->SelectedData, $templateCode);
 
 	/* lookup fields array: 'lookup field name' => ['parent table name', 'lookup field caption'] */
-	$lookup_fields = ['PUESTO' => ['divpol2022', 'PUESTO'], ];
+	$lookup_fields = ['CEDULA' => ['lideres', 'CEDULA'], 'PUESTO' => ['divpol2022', 'PUESTO'], ];
 	foreach($lookup_fields as $luf => $ptfc) {
 		$pt_perm = getTablePermissions($ptfc[0]);
 

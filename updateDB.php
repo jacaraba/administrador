@@ -22,15 +22,7 @@
 				`CORREO` VARCHAR(40) NULL,
 				`OBSERVACIONES` VARCHAR(100) NULL,
 				`ESTADO` VARCHAR(10) NULL DEFAULT 'INGRESADO'
-			) CHARSET utf8mb4", [
-				" ALTER TABLE `lideres` CHANGE `LLAVE` `LLAVE` INT NOT NULL ",
-				"ALTER TABLE `lideres` ADD INDEX (`LLAVE`)",
-				"ALTER TABLE `lideres` DROP PRIMARY KEY",
-				"ALTER TABLE `lideres` CHANGE `CEDULA` `CEDULA` VARCHAR(10) NOT NULL ",
-				"ALTER TABLE `lideres` DROP `LLAVE`",
-				"ALTER TABLE `lideres` DROP `ESLIDER`",
-				"ALTER TABLE `lideres` ADD PRIMARY KEY (`CEDULA`)",
-			]
+			) CHARSET utf8mb4"
 		);
 		setupIndexes('lideres', ['PUESTO',]);
 
@@ -53,7 +45,7 @@
 				`ESTADO` VARCHAR(10) NULL DEFAULT 'INGRESADO'
 			) CHARSET utf8mb4"
 		);
-		setupIndexes('amigos', ['PUESTO',]);
+		setupIndexes('amigos', ['CEDULA','PUESTO',]);
 
 		setupTable(
 			'divpol2022', " 

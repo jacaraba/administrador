@@ -8,6 +8,7 @@
 
 		/* data for selected record, or defaults if none is selected */
 		var data = {
+			CEDULA: <?php echo json_encode(['id' => $rdata['CEDULA'], 'value' => $rdata['CEDULA'], 'text' => $jdata['CEDULA']]); ?>,
 			PUESTO: <?php echo json_encode(['id' => $rdata['PUESTO'], 'value' => $rdata['PUESTO'], 'text' => $jdata['PUESTO']]); ?>
 		};
 
@@ -15,6 +16,14 @@
 		AppGini.cache = AppGini.cache || {};
 		AppGini.cache[tn] = AppGini.cache[tn] || AppGini.ajaxCache();
 		var cache = AppGini.cache[tn];
+
+		/* saved value for CEDULA */
+		cache.addCheck(function(u, d) {
+			if(u != 'ajax_combo.php') return false;
+			if(d.t == tn && d.f == 'CEDULA' && d.id == data.CEDULA.id)
+				return { results: [ data.CEDULA ], more: false, elapsed: 0.01 };
+			return false;
+		});
 
 		/* saved value for PUESTO */
 		cache.addCheck(function(u, d) {

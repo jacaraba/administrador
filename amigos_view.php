@@ -21,7 +21,7 @@
 		"`amigos`.`LLAVE`" => "LLAVE",
 		"`amigos`.`ESLIDER`" => "ESLIDER",
 		"`amigos`.`LIDER`" => "LIDER",
-		"`amigos`.`CEDULA`" => "CEDULA",
+		"IF(    CHAR_LENGTH(`lideres1`.`CEDULA`) || CHAR_LENGTH(`lideres1`.`NOMBRE`), CONCAT_WS('',   `lideres1`.`CEDULA`, ' - ', `lideres1`.`NOMBRE`), '') /* CEDULA */" => "CEDULA",
 		"`amigos`.`NOMBRE`" => "NOMBRE",
 		"IF(    CHAR_LENGTH(`divpol20221`.`PUESTO`) || CHAR_LENGTH(`divpol20221`.`nompue`), CONCAT_WS('',   `divpol20221`.`PUESTO`, ' - ', `divpol20221`.`nompue`), '') /* PUESTO */" => "PUESTO",
 		"`amigos`.`NOMPUESTO`" => "NOMPUESTO",
@@ -54,7 +54,7 @@
 		"`amigos`.`LLAVE`" => "LLAVE",
 		"`amigos`.`ESLIDER`" => "ESLIDER",
 		"`amigos`.`LIDER`" => "LIDER",
-		"`amigos`.`CEDULA`" => "CEDULA",
+		"IF(    CHAR_LENGTH(`lideres1`.`CEDULA`) || CHAR_LENGTH(`lideres1`.`NOMBRE`), CONCAT_WS('',   `lideres1`.`CEDULA`, ' - ', `lideres1`.`NOMBRE`), '') /* CEDULA */" => "CEDULA",
 		"`amigos`.`NOMBRE`" => "NOMBRE",
 		"IF(    CHAR_LENGTH(`divpol20221`.`PUESTO`) || CHAR_LENGTH(`divpol20221`.`nompue`), CONCAT_WS('',   `divpol20221`.`PUESTO`, ' - ', `divpol20221`.`nompue`), '') /* PUESTO */" => "PUESTO",
 		"`amigos`.`NOMPUESTO`" => "NOMPUESTO",
@@ -70,7 +70,7 @@
 		"`amigos`.`LLAVE`" => "LLAVE",
 		"`amigos`.`ESLIDER`" => "ES LIDER:",
 		"`amigos`.`LIDER`" => "LIDER",
-		"`amigos`.`CEDULA`" => "CEDULA",
+		"IF(    CHAR_LENGTH(`lideres1`.`CEDULA`) || CHAR_LENGTH(`lideres1`.`NOMBRE`), CONCAT_WS('',   `lideres1`.`CEDULA`, ' - ', `lideres1`.`NOMBRE`), '') /* CEDULA */" => "CEDULA",
 		"`amigos`.`NOMBRE`" => "NOMBRE",
 		"IF(    CHAR_LENGTH(`divpol20221`.`PUESTO`) || CHAR_LENGTH(`divpol20221`.`nompue`), CONCAT_WS('',   `divpol20221`.`PUESTO`, ' - ', `divpol20221`.`nompue`), '') /* PUESTO */" => "PUESTO",
 		"`amigos`.`NOMPUESTO`" => "NOMBRE DEL PUESTO",
@@ -87,7 +87,7 @@
 		"`amigos`.`LLAVE`" => "LLAVE",
 		"`amigos`.`ESLIDER`" => "ESLIDER",
 		"`amigos`.`LIDER`" => "LIDER",
-		"`amigos`.`CEDULA`" => "CEDULA",
+		"IF(    CHAR_LENGTH(`lideres1`.`CEDULA`) || CHAR_LENGTH(`lideres1`.`NOMBRE`), CONCAT_WS('',   `lideres1`.`CEDULA`, ' - ', `lideres1`.`NOMBRE`), '') /* CEDULA */" => "CEDULA",
 		"`amigos`.`NOMBRE`" => "NOMBRE",
 		"IF(    CHAR_LENGTH(`divpol20221`.`PUESTO`) || CHAR_LENGTH(`divpol20221`.`nompue`), CONCAT_WS('',   `divpol20221`.`PUESTO`, ' - ', `divpol20221`.`nompue`), '') /* PUESTO */" => "PUESTO",
 		"`amigos`.`NOMPUESTO`" => "NOMPUESTO",
@@ -100,9 +100,9 @@
 	];
 
 	// Lookup fields that can be used as filterers
-	$x->filterers = ['PUESTO' => 'PUESTO', ];
+	$x->filterers = ['CEDULA' => 'CEDULA', 'PUESTO' => 'PUESTO', ];
 
-	$x->QueryFrom = "`amigos` LEFT JOIN `divpol2022` as divpol20221 ON `divpol20221`.`PUESTO`=`amigos`.`PUESTO` ";
+	$x->QueryFrom = "`amigos` LEFT JOIN `lideres` as lideres1 ON `lideres1`.`CEDULA`=`amigos`.`CEDULA` LEFT JOIN `divpol2022` as divpol20221 ON `divpol20221`.`PUESTO`=`amigos`.`PUESTO` ";
 	$x->QueryWhere = '';
 	$x->QueryOrder = '';
 

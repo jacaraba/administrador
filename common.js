@@ -362,6 +362,9 @@ function amigos_validateData() {
 	$j('.has-error').removeClass('has-error');
 	var errors = false;
 
+	// check all required fields have values
+	if(!AppGini.Validation.fieldRequired('list', 'ESLIDER', 'ES LIDER:')) return false;
+
 	return !errors;
 }
 function divpol2022_validateData() {

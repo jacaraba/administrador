@@ -27,6 +27,11 @@ function amigos_insert(&$error_message = '') {
 		'ESTADO' => Request::val('ESTADO', 'INGRESADO'),
 	];
 
+	if($data['ESLIDER'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'ES LIDER:': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
 
 	// hook: amigos_before_insert
 	if(function_exists('amigos_before_insert')) {
@@ -134,6 +139,11 @@ function amigos_update(&$selected_id, &$error_message = '') {
 		'ESTADO' => Request::val('ESTADO', ''),
 	];
 
+	if($data['ESLIDER'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'ES LIDER:': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
 	// get existing values
 	$old_data = getRecord('amigos', $selected_id);
 	if(is_array($old_data)) {
@@ -235,6 +245,7 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 		$combo_ESLIDER->ListData = $combo_ESLIDER->ListItem;
 	}
 	$combo_ESLIDER->SelectName = 'ESLIDER';
+	$combo_ESLIDER->AllowNull = false;
 	// combobox: LIDER
 	$combo_LIDER = new DataCombo;
 	// combobox: PUESTO

@@ -1030,7 +1030,7 @@
 						],
 					],
 					'ESLIDER' => [
-						'appgini' => "VARCHAR(10) NULL DEFAULT 'VOTANTE'",
+						'appgini' => "VARCHAR(10) NOT NULL DEFAULT 'VOTANTE'",
 						'info' => [
 							'caption' => 'ES LIDER:',
 							'description' => '',

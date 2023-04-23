@@ -1037,7 +1037,7 @@
 						],
 					],
 					'LIDER' => [
-						'appgini' => "VARCHAR(10) NULL DEFAULT '1111111111'",
+						'appgini' => "VARCHAR(10) NOT NULL DEFAULT '1111111111'",
 						'info' => [
 							'caption' => 'LIDER',
 							'description' => '',
@@ -1107,7 +1107,7 @@
 						],
 					],
 					'ESTADO' => [
-						'appgini' => "VARCHAR(10) NULL DEFAULT 'INGRESADO'",
+						'appgini' => "VARCHAR(10) NOT NULL DEFAULT 'INGRESADO'",
 						'info' => [
 							'caption' => 'ESTADO',
 							'description' => '',

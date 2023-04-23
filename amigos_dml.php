@@ -32,6 +32,16 @@ function amigos_insert(&$error_message = '') {
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
 		exit;
 	}
+	if($data['LIDER'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'LIDER': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
+	if($data['ESTADO'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'ESTADO': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
 
 	// hook: amigos_before_insert
 	if(function_exists('amigos_before_insert')) {
@@ -141,6 +151,16 @@ function amigos_update(&$selected_id, &$error_message = '') {
 
 	if($data['ESLIDER'] === '') {
 		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'ES LIDER:': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
+	if($data['LIDER'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'LIDER': {$Translation['field not null']}<br><br>";
+		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
+		exit;
+	}
+	if($data['ESTADO'] === '') {
+		echo StyleSheet() . "\n\n<div class=\"alert alert-danger\">{$Translation['error:']} 'ESTADO': {$Translation['field not null']}<br><br>";
 		echo '<a href="" onclick="history.go(-1); return false;">' . $Translation['< back'] . '</a></div>';
 		exit;
 	}
@@ -265,6 +285,7 @@ function amigos_form($selected_id = '', $AllowUpdate = 1, $AllowInsert = 1, $All
 		$combo_ESTADO->ListData = $combo_ESTADO->ListItem;
 	}
 	$combo_ESTADO->SelectName = 'ESTADO';
+	$combo_ESTADO->AllowNull = false;
 
 	if($selected_id) {
 		if(!check_record_permission('amigos', $selected_id, 'view'))

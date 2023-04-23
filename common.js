@@ -364,6 +364,8 @@ function amigos_validateData() {
 
 	// check all required fields have values
 	if(!AppGini.Validation.fieldRequired('list', 'ESLIDER', 'ES LIDER:')) return false;
+	if(!AppGini.Validation.fieldRequired('lookup', 'LIDER', 'LIDER')) return false;
+	if(!AppGini.Validation.fieldRequired('list', 'ESTADO', 'ESTADO')) return false;
 
 	return !errors;
 }

@@ -3,7 +3,7 @@
 	@define('SESSION_NAME', 'U392441939_amigos');
 	@define('APP_TITLE', 'U392441939 Amigos');
 	@define('APP_DIR', __DIR__);
-	@define('APP_VERSION', '22.14');
+	@define('APP_VERSION', '23.11');
 	@define('maxSortBy', 4);
 	@define('empty_lookup_value', '{empty_value}');
 	@define('MULTIPLE_SUPER_ADMINS', false);

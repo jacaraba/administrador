@@ -31,18 +31,18 @@
 				<!-- Field: LIDER -->
 				<div class="form-group amigos-LIDER">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="LIDER">LIDER</label>
+					<label class="control-label col-lg-3" for="LIDER" data-parent_link="view_parent_modal">LIDER</label>
 					<div class="col-lg-9">
-						<input type="text" class="form-control" name="LIDER" id="LIDER" value="<%%VALUE(LIDER)%%>">
+						<div class="lookup-flex"><%%COMBO(LIDER)%%><%%PLINK(LIDER)%%><%%ADDNEW(lideres)%%></div>
 					</div>
 				</div>
 
 				<!-- Field: CEDULA -->
 				<div class="form-group amigos-CEDULA">
 					<hr class="hidden-md hidden-lg">
-					<label class="control-label col-lg-3" for="CEDULA" data-parent_link="view_parent_modal">CEDULA</label>
+					<label class="control-label col-lg-3" for="CEDULA">CEDULA</label>
 					<div class="col-lg-9">
-						<div class="lookup-flex"><%%COMBO(CEDULA)%%><%%PLINK(CEDULA)%%><%%ADDNEW(lideres)%%></div>
+						<input maxlength="10" type="text" class="form-control" name="CEDULA" id="CEDULA" value="<%%VALUE(CEDULA)%%>">
 					</div>
 				</div>
 

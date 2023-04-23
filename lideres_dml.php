@@ -105,7 +105,7 @@ function lideres_delete($selected_id, $AllowDeleteOfParents = false, $skipChecks
 	// child table: amigos
 	$res = sql("SELECT `CEDULA` FROM `lideres` WHERE `CEDULA`='{$selected_id}'", $eo);
 	$CEDULA = db_fetch_row($res);
-	$rires = sql("SELECT COUNT(1) FROM `amigos` WHERE `CEDULA`='" . makeSafe($CEDULA[0]) . "'", $eo);
+	$rires = sql("SELECT COUNT(1) FROM `amigos` WHERE `LIDER`='" . makeSafe($CEDULA[0]) . "'", $eo);
 	$rirow = db_fetch_row($rires);
 	if($rirow[0] && !$AllowDeleteOfParents && !$skipChecks) {
 		$RetMsg = $Translation["couldn't delete"];

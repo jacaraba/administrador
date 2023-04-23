@@ -1031,7 +1031,7 @@
 						],
 					],
 					'LIDER' => [
-						'appgini' => "INT NULL DEFAULT '1111111111'",
+						'appgini' => "VARCHAR(10) NULL DEFAULT '1111111111'",
 						'info' => [
 							'caption' => 'LIDER',
 							'description' => '',
@@ -2278,7 +2278,7 @@
 				'divpol2022' => ['PUESTO'],
 			],
 			'amigos' => [
-				'lideres' => ['CEDULA'],
+				'lideres' => ['LIDER'],
 				'divpol2022' => ['PUESTO'],
 			],
 			'municipios' => [
@@ -2464,7 +2464,7 @@
 				'PUESTO' => 'SELECT `divpol2022`.`PUESTO`, IF(CHAR_LENGTH(`divpol2022`.`PUESTO`) || CHAR_LENGTH(`divpol2022`.`nompue`), CONCAT_WS(\'\', `divpol2022`.`PUESTO`, \'-\', `divpol2022`.`nompue`), \'\') FROM `divpol2022` ORDER BY 2',
 			],
 			'amigos' => [
-				'CEDULA' => 'SELECT `lideres`.`CEDULA`, IF(CHAR_LENGTH(`lideres`.`CEDULA`) || CHAR_LENGTH(`lideres`.`NOMBRE`), CONCAT_WS(\'\', `lideres`.`CEDULA`, \' - \', `lideres`.`NOMBRE`), \'\') FROM `lideres` LEFT JOIN `divpol2022` as divpol20221 ON `divpol20221`.`PUESTO`=`lideres`.`PUESTO` ORDER BY 2',
+				'LIDER' => 'SELECT `lideres`.`CEDULA`, IF(CHAR_LENGTH(`lideres`.`CEDULA`) || CHAR_LENGTH(`lideres`.`NOMBRE`), CONCAT_WS(\'\', `lideres`.`CEDULA`, \' - \', `lideres`.`NOMBRE`), \'\') FROM `lideres` LEFT JOIN `divpol2022` as divpol20221 ON `divpol20221`.`PUESTO`=`lideres`.`PUESTO` ORDER BY 2',
 				'PUESTO' => 'SELECT `divpol2022`.`PUESTO`, IF(CHAR_LENGTH(`divpol2022`.`PUESTO`) || CHAR_LENGTH(`divpol2022`.`nompue`), CONCAT_WS(\'\', `divpol2022`.`PUESTO`, \' - \', `divpol2022`.`nompue`), \'\') FROM `divpol2022` ORDER BY 2',
 			],
 			'divpol2022' => [
